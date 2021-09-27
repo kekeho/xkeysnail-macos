@@ -1,14 +1,30 @@
 # -*- coding: utf-8 -*-
-
+import string
 import re
 from xkeysnail.transform import *
 
-# [Conditional modemap] Swap Ctrl and Cmd except for terminal
-define_conditional_modmap(lambda wm_class: wm_class not in ("Xfce4-terminal|Your-terminal-app-here"), {
-    Key.LEFT_META: Key.LEFT_CTRL,
-    Key.LEFT_CTRL: Key.LEFT_META,
-    Key.RIGHT_META: Key.RIGHT_CTRL
-})
+
+define_keymap(lambda wm_class: wm_class not in ("Xfce4-terminal|Your-terminal-app-here"), {
+    K("Ctrl-f"): K("RIGHT"),
+    K("Ctrl-b"): K("LEFT"),
+    K("Ctrl-p"): K("UP"),
+    K("Ctrl-n"): K("DOWN"),
+    
+    K("Ctrl-a"): K("HOME"),
+    K("Ctrl-e"): K("END"),
+
+    K("C-d"): K("DELETE"),
+    K("C-h"): K("BACKSPACE"),
+    K("C-k"): [K("Shift-end"), K("BACKSPACE")]
+}, "emacs-like keybind")
+
+
+command_maps = dict()
+for x in string.ascii_lowercase:
+    command_maps[K(f"Super-{x}")] = K(f"Ctrl-{x}")
+
+define_keymap(lambda wm_class: wm_class not in ("Xfce4-terminal|Your-terminal-app-here"), command_maps, "mac-like keybind super->command")
+
 
 # [Conditional keybindings] Terminal
 define_keymap(re.compile("Xfce4-terminal|Your-terminal-app-here"), {
